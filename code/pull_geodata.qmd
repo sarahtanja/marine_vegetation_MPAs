@@ -1,0 +1,94 @@
+---
+title: "Pull spatial data from publicly available sources"
+format: html
+---
+
+```{r}
+library(sf)
+library(leaflet)
+library(tidyverse)
+```
+
+```{r}
+here::i_am("code/pull_geodata.qmd")
+```
+
+# NOAA MPA Inventory
+
+The [NOAA Marine Protected Areas Inventory](https://marineprotectedareas.noaa.gov/dataanalysis/mpainventory/) hosts a publicly available Downloadable GIS data link. The link I'm using here was the inventory as it stands in November 2026, which was last updated in 2023 :
+
+<https://marineprotectedareas.noaa.gov/media/data/NOAA_Marine_Protected_Areas_Inventory_2023.zip>
+
+The following code downloads the GIS data to the input folder and unzips it
+
+```{r}
+# point to the GIS download link
+noaa_mpa_url <- paste0("https://marineprotectedareas.noaa.gov/media/data/NOAA_Marine_Protected_Areas_Inventory_2023.zip")
+
+zip_path <- here::here("input", "noaa_mpa_2023.zip")
+input_path <- here::here("input")
+
+download.file(noaa_mpa_url, zip_path, mode = "wb")
+unzip(zip_path, exdir = input_path)
+
+# delete the .zip 
+file.remove(zip_path)
+```
+
+The following code downloads the .xlsx metadata
+
+```{r}
+noaa_mpa_metadata <- paste0("https://marineprotectedareas.noaa.gov/media/data/NOAA_Marine_Protected_Areas_Inventory_2023.xlsx")
+
+download.file(noaa_mpa_metadata, )
+
+
+```
+
+Examine .gdb
+
+```{r gdb-path}
+# Find folders ending in .gdb
+folders <- list.dirs(
+  input_path,
+  recursive = TRUE,
+  full.names = TRUE
+)
+
+gdb_path <- folders[grepl("\\.gdb$", folders, ignore.case = TRUE)]
+
+gdb_path
+```
+
+A geodatabase can contain multiple layers. Examine available layers and geometry types.
+
+```{r gdb-layers}
+layers <- st_layers(gdb_path)
+layers
+```
+
+| Output | What it means |
+|:---|:---|
+| `layer_name: NOAA_MPA_Inventory` | The exact layer name you can pass to `st_read()`. |
+| `geometry_type: Multi Polygon` | Each feature can contain multiple separate polygon pieces—for example, disconnected protected areas represented by one record. It does not mean each piece is a separate row. |
+| `features: 979` | There are 979 spatial records in this layer. That is not necessarily the number of distinct sites; check the site identifiers before treating it as a site count. |
+| `fields: 35` | Each feature has 35 non-geometry attribute fields describing it. |
+| `crs_name: WGS 84 / Pseudo-Mercator` | The coordinate reference system is Web Mercator, also called EPSG:3857. It uses projected coordinates in metres rather than longitude/latitude in degrees. |
+
+```{r}
+noaa_mpa <- st_read(
+  dsn = gdb_path,
+  layer = "NOAA_MPA_Inventory"
+)
+
+names(noaa_mpa)
+```
+
+```{r}
+noaa_mpa_wa <- noaa_mpa |> 
+  filter(State == "WA")
+```
+
+```{r}
+plot(st_geometry(noaa_mpa_wa))
+```
