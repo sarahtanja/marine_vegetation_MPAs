@@ -1,2 +1,5 @@
 #geodatabase folders
 *.gdb/
+*.zip/
+#
+.Rproj.user/
