@@ -19,7 +19,7 @@ The [NOAA Marine Protected Areas Inventory](https://marineprotectedareas.noaa.go
 
 <https://marineprotectedareas.noaa.gov/media/data/NOAA_Marine_Protected_Areas_Inventory_2023.zip>
 
-The following code downloads the GIS data to the input folder and unzips it
+The following code downloads the GIS data to the input folder and unzips it. You must have a secure connection to the internet to download the .zip file.
 
 ```{r}
 # point to the GIS download link
@@ -30,18 +30,6 @@ input_path <- here::here("input")
 
 download.file(noaa_mpa_url, zip_path, mode = "wb")
 unzip(zip_path, exdir = input_path)
-
-# delete the .zip 
-file.remove(zip_path)
-```
-
-The following code downloads the .xlsx metadata
-
-```{r}
-noaa_mpa_metadata <- paste0("https://marineprotectedareas.noaa.gov/media/data/NOAA_Marine_Protected_Areas_Inventory_2023.xlsx")
-
-download.file(noaa_mpa_metadata, )
-
 
 ```
 
