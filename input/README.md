@@ -1,0 +1,1 @@
+Input is where I've downloaded the large geodatabade files, but they're not tracked with git. I have `*.gdb/` in my `.gitignore` file.

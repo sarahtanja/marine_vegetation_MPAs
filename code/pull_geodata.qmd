@@ -56,7 +56,7 @@ layers
 ```
 
 | Output | What it means |
-|:---|:---|
+|:-----------------------------------|:-----------------------------------|
 | `layer_name: NOAA_MPA_Inventory` | The exact layer name you can pass to `st_read()`. |
 | `geometry_type: Multi Polygon` | Each feature can contain multiple separate polygon pieces—for example, disconnected protected areas represented by one record. It does not mean each piece is a separate row. |
 | `features: 979` | There are 979 spatial records in this layer. That is not necessarily the number of distinct sites; check the site identifiers before treating it as a site count. |
@@ -79,4 +79,8 @@ noaa_mpa_wa <- noaa_mpa |>
 
 ```{r}
 plot(st_geometry(noaa_mpa_wa))
+```
+
+```{r}
+sessionInfo()
 ```
