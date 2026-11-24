@@ -92,3 +92,7 @@ noaa_mpa_wa <- noaa_mpa |>
 ```{r}
 plot(st_geometry(noaa_mpa_wa))
 ```
+
+```{r}
+sessionInfo()
+```
